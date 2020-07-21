@@ -94,6 +94,7 @@ class ProductDetail extends React.Component {
   render() {
     const { data, error, formData, formVisible, loading } = this.state;
     const item = data;
+    console.log(data && data.variation && data.variation.length > 0);
     return (
       <Container>
         {error && (
@@ -146,7 +147,11 @@ class ProductDetail extends React.Component {
                       floated="right"
                       icon
                       labelPosition="right"
-                      onClick={this.handleToggleForm}
+                      onClick={
+                        data && data.variation && data.variation.length > 0
+                          ? this.handleToggleForm
+                          : () => this.handleAddToCart(item.slug)
+                      }
                     >
                       Add to Cart
                       <Icon name="add to cart" />

@@ -74,50 +74,62 @@ class ProductList extends React.Component {
         )}
         <Item.Group divided>
           {data.map((item) => {
-            return (
-              <Item key={item.id}>
-                <Item.Image src={item.image} />
-                <Item.Content>
-                  <Item.Header
-                    as="a"
-                    onClick={() =>
-                      this.props.history.push(`/products/${item.id}`)
-                    }
-                  >
-                    {item.title}
-                  </Item.Header>
-                  <Item.Meta>
-                    <span className="cinema">{item.category}</span>
-                  </Item.Meta>
-                  <Item.Description>{item.description}</Item.Description>
-                  <Item.Extra>
-                    {/* <Button
-                      primary
-                      floated="right"
-                      icon
-                      labelPosition="right"
-                      onClick={() => this.handleAddToCart(item.slug)}
+            if (item.active) {
+              return (
+                <Item key={item.id}>
+                  <Item.Image src={item.image} />
+                  <Item.Content>
+                    <Item.Header
+                      as="a"
+                      onClick={() =>
+                        this.props.history.push(`/products/${item.id}`)
+                      }
                     >
-                      Add to Cart
-                      <Icon name="add to cart" />
-                    </Button> */}
-                    {item.discount_price && (
-                      <Label
-                        color={
-                          item.label === "primary"
-                            ? "blue"
-                            : item.label === "secondary"
-                            ? "green"
-                            : "olive"
-                        }
+                      {item.title}
+                    </Item.Header>
+                    <Item.Meta>
+                      <span className="cinema">{item.category}</span>
+                    </Item.Meta>
+                    <Item.Description>{item.description}</Item.Description>
+                    <Item.Extra>
+                      <Button
+                        primary
+                        floated="right"
+                        icon
+                        labelPosition="right"
+                        onClick={() => this.handleAddToCart(item.slug)}
                       >
-                        {`$ ${item.discount_price}`}
+                        Add to Cart
+                        <Icon name="add to cart" />
+                      </Button>
+                      <Label
+                        style={{
+                          textDecoration: item.discount_price
+                            ? "line-through"
+                            : "none",
+                        }}
+                        color={item.discount_price ? "red" : "green"}
+                      >
+                        {`$ ${item.price}`}
                       </Label>
-                    )}
-                  </Item.Extra>
-                </Item.Content>
-              </Item>
-            );
+                      {item.discount_price && (
+                        <Label
+                          color={
+                            item.label === "primary"
+                              ? "blue"
+                              : item.label === "secondary"
+                              ? "green"
+                              : "olive"
+                          }
+                        >
+                          {`$ ${item.discount_price}`}
+                        </Label>
+                      )}
+                    </Item.Extra>
+                  </Item.Content>
+                </Item>
+              );
+            }
           })}
         </Item.Group>
       </Container>

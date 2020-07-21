@@ -31,12 +31,14 @@ class ItemSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'price',
+            'quantity_in_stock',
             'discount_price',
             'category',
             'label',
             'slug',
             'description',
             'image',
+            'active'
         )
 
     def get_category(self, obj):

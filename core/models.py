@@ -43,12 +43,16 @@ class UserProfile(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
+    quantity_in_stock = models.IntegerField(
+        default=0, blank=False, null=False)     # new field. If quantity=0 prise field shows "Not in stock"
     discount_price = models.FloatField(blank=True, null=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()
+    active = models.BooleanField(
+        default=True, blank=False, null=False)     # new field Not active Items not shown at shop list
 
     def __str__(self):
         return self.title
