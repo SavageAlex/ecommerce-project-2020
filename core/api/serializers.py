@@ -42,7 +42,7 @@ class ItemSerializer(serializers.ModelSerializer):
         )
 
     def get_category(self, obj):
-        return obj.get_category_display()
+        return obj.get_cat_list_display()
 
     def get_label(self, obj):
         return obj.get_label_display()
@@ -172,7 +172,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
         )
 
     def get_category(self, obj):
-        return obj.get_category_display()
+        return obj.get_cat_list_display()
 
     def get_label(self, obj):
         return obj.get_label_display()

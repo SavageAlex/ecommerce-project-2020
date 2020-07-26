@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Item, OrderItem, Order, Payment, Coupon, Refund,
-    Address, Variation, ItemVariation,
+    Address, Variation, ItemVariation, Category
 )
 
 
@@ -93,6 +93,7 @@ class VariationAdmin(admin.ModelAdmin):
     inlines = [ItemVariationInLineAdmin]
 
 
+admin.site.register(Category)
 admin.site.register(ItemVariation, ItemVariationAdmin)
 admin.site.register(Variation, VariationAdmin)
 admin.site.register(Item)

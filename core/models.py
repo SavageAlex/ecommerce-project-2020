@@ -4,11 +4,12 @@ from django.db import models
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 
-CATEGORY_CHOICES = (
-    ('S', 'Рубашки'),
-    ('SW', 'Спортивная одежда'),
-    ('OW', 'Верхняя одежда')
-)
+# CATEGORY_CHOICES = (
+#     ('PF', 'Парфюмерия'),
+#     ('S', 'Рубашки'),
+#     ('SW', 'Спортивная одежда'),
+#     ('OW', 'Верхняя одежда')
+# )
 
 LABEL_CHOICES = (
     ('P', 'primary'),
@@ -40,13 +41,40 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField()
+    parent = models.ForeignKey(
+        'self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
+
+    class Meta:
+        # enforcing that there can not be two categories under a parent with same slug
+
+        # __str__ method elaborated later in post.  use __unicode__ in place of
+
+        # __str__ if you are using python 2
+
+        unique_together = ('slug', 'parent',)
+        verbose_name_plural = "categories"
+
+    def __str__(self):
+        full_path = [self.name]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.name)
+            k = k.parent
+        return ' -> '.join(full_path[::-1])
+
+
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     quantity_in_stock = models.IntegerField(
         default=0, blank=False, null=False)     # new field. If quantity=0 prise field shows "Not in stock"
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.ForeignKey(
+        Category, null=True, blank=True, on_delete=models.SET_NULL)
+    # category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
@@ -71,6 +99,28 @@ class Item(models.Model):
         return reverse("core:remove-from-cart", kwargs={
             'slug': self.slug
         })
+
+    # def get_cat_list(self):
+    #     k = self.category  # for now ignore this instance method
+
+    #     breadcrumb = ["dummy"]
+    #     while k is not None:
+    #         breadcrumb.append(k.slug)
+    #         k = k.parent
+    #     for i in range(len(breadcrumb)-1):
+    #         breadcrumb[i] = '/'.join(breadcrumb[-1:i-1:-1])
+    #     return breadcrumb[-1:0:-1]
+
+    def get_cat_list_display(self):
+        k = self.category  # for now ignore this instance method
+
+        breadcrumb = []
+        while k is not None:
+            breadcrumb.append(k.name)
+            k = k.parent
+        for i in range(len(breadcrumb) - 1):  # 3
+            breadcrumb[i] = f'/{breadcrumb[i]}'
+        return breadcrumb[::-1]
 
 
 class Variation(models.Model):
